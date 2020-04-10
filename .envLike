@@ -1,0 +1,4 @@
+PORT=3000
+DB_URI=mongodb://user:pass@host:port/dbname
+DB_NS=dbnamespace
+DB_COLLECTION=logs
