@@ -18,6 +18,18 @@ async function createLog(req, res) {
   }
 }
 
+async function getBrowsers(req, res) {
+
+  try {
+
+    res.status(202).send(await logsDAO.getBrowsers())
+    
+  } catch (error) {
+    res.status(500).send({ message: `Error retrieving browser stats from DB: ${error} ` });
+  }
+}
+
 module.exports = {
-  createLog
+  createLog,
+  getBrowsers
 }

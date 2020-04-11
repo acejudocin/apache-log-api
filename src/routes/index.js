@@ -11,6 +11,9 @@ api.options('*', cors());
 // ****** APACHE LOGS ************
 api.post('/logs', logsController.createLog);
 
+// ****** STATS ***********
+api.get('/statistics/browsers', logsController.getBrowsers);
+
 // ******* TEST ******
 api.use("/hello", (req, res) => res.status(200).send("Hello world!"))
 api.use("*", (req, res) => res.status(404).json({ error: "not found" }))

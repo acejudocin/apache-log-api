@@ -30,4 +30,49 @@ module.exports = class LogsDAO {
     }
   }
 
+  static async getBrowsers() {
+    try {
+      let stats = new Array();
+      let collectionDocuments = await logs.estimatedDocumentCount({});
+
+      stats.push({
+        name: 'Firefox',
+        y: await logs.find({"reqHeaderUserAgent": {$regex: ".*Firefox/.*"}}).count() * 100 / collectionDocuments})
+
+      stats.push({
+        name: 'Seamonkey',
+        y: await logs.find( {"reqHeaderUserAgent": {$regex: ".*Seamonkey/.*"}}).count() * 100 / collectionDocuments})
+
+      stats.push({
+        name: 'Chrome',
+        y: await logs.find( {"reqHeaderUserAgent": {$regex: ".*Chrome/.*"}}).count() * 100 / collectionDocuments})
+
+      stats.push({
+        name: 'Edge',
+        y: await logs.find( {"reqHeaderUserAgent": {$regex: ".*Edge/.*"}}).count() * 100 / collectionDocuments})
+
+      stats.push({
+        name: 'Chromium',
+        y: await logs.find( {"reqHeaderUserAgent": {$regex: ".*Chromium/.*"}}).count() * 100 / collectionDocuments})
+
+      stats.push({
+        name: 'Safari',
+        y: await logs.find( {"reqHeaderUserAgent": {$regex: ".*Safari/.*"}}).count() * 100 / collectionDocuments})
+
+      stats.push({
+        name: 'Opera',
+        y: await logs.find( { $or: [{"reqHeaderUserAgent": {$regex: ".*OPR/.*"}}, {"reqHeaderUserAgent": {$regex: ".*Opera/.*"}}]}).count() * 100 / collectionDocuments})
+      
+      stats.push({
+        name: 'Internet Explorer',
+        y: await logs.find( { $or: [{"reqHeaderUserAgent": {$regex: ".*MSIE.*"}}, {"reqHeaderUserAgent": {$regex: ".*Trident/7.0;.*"}}]}).count() * 100 / collectionDocuments})
+      
+      return stats
+
+    } catch (e) {
+      console.error(`Error occurred while retrieving browser stats from DB, ${e}.`)
+      return { error: e }
+    }
+  }
+
 }
