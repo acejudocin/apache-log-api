@@ -18,6 +18,7 @@ async function createLog(req, res) {
   }
 }
 
+/** Gets browsers percentage usage */
 async function getBrowsers(req, res) {
 
   try {
@@ -29,7 +30,31 @@ async function getBrowsers(req, res) {
   }
 }
 
+/** Obtains Apache general information:
+ *  - TotalTraffic
+ *  - DistinctVisitors
+ *  - TotalRequests
+ */
+async function getGeneralInfo(req, res) {
+
+  try {
+
+    let stats = new Object()
+
+    stats.totalTraffic = await logsDAO.getTraffic()
+    stats.distinctVisitors = await logsDAO.getDistinctVisitors()
+    stats.totalRequests = await logsDAO.getTotalRequests()
+
+    res.status(200).send(stats)
+    
+  } catch (error) {
+    res.status(500).send({ message: `Error retrieving general info from DB: ${error} ` });
+  }
+}
+
+
 module.exports = {
   createLog,
-  getBrowsers
+  getBrowsers,
+  getGeneralInfo
 }

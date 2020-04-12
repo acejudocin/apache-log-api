@@ -30,10 +30,15 @@ module.exports = class LogsDAO {
     }
   }
 
+  /** Returns the total number of request to Apache server */
+  static async getTotalRequests() {
+    return await logs.estimatedDocumentCount({})
+  }
+
   static async getBrowsers() {
     try {
       let stats = new Array();
-      let collectionDocuments = await logs.estimatedDocumentCount({});
+      let collectionDocuments = await this.getTotalRequests()
 
       stats.push({
         name: 'Firefox',
@@ -71,6 +76,48 @@ module.exports = class LogsDAO {
 
     } catch (e) {
       console.error(`Error occurred while retrieving browser stats from DB, ${e}.`)
+      return { error: e }
+    }
+  }
+
+  /** Get size of all responese in bytes */
+  static async getTraffic() {
+    try {
+      let cursor = await logs.aggregate([
+        {
+          $group: {
+            _id: null, 
+            totalTraffic: { $sum: '$sizeCLF' }
+          }
+        }
+      ]).toArray()
+
+      return cursor[0].totalTraffic
+
+    } catch (e) {
+      console.error(`Error occurred while retrieving traffic stats from DB, ${e}.`)
+      return { error: e }
+    }
+  }
+
+  /** Get Apache distinct visitors */
+  static async getDistinctVisitors() {
+    try {
+      let cursor = await logs.aggregate([
+        {
+          $group: {
+            _id: '$remoteHost'
+          }
+        },
+        {
+          $count: 'distinctVisitors'
+        }
+      ]).toArray()
+
+      return cursor[0].distinctVisitors
+
+    } catch (e) {
+      console.error(`Error occurred while retrieving distinct visitors stats from DB, ${e}.`)
       return { error: e }
     }
   }

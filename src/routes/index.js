@@ -13,6 +13,7 @@ api.post('/logs', logsController.createLog);
 
 // ****** STATS ***********
 api.get('/statistics/browsers', logsController.getBrowsers);
+api.get('/statistics/generalinfo', logsController.getGeneralInfo);
 
 // ******* TEST ******
 api.use("/hello", (req, res) => res.status(200).send("Hello world!"))
